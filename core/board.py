@@ -15,6 +15,9 @@ class Board:
     
     def __len__(self):
         return len(self.cells)
+    
+    def __getitem__(self, i):
+        return self.cells[i]
 
     def import_from_command_line(self):
         self.load_json(input("Enter puzzle json:"))
