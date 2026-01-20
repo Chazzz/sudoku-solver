@@ -9,7 +9,7 @@ class TestNakedDoubles(unittest.TestCase):
     
     def test_basic_case(self):
         golden_coordinates = ['B1', 'C1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'B2', 'B3', 'C2', 'C3']
-        s = "[{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 0, \"y\": 1, \"candidates\": [2, 3]}]"
+        s = "{\"cells\": [{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 0, \"y\": 1, \"candidates\": [2, 3]}]}"
         self.board.load_json(s)
         update = self.rule.find_update(self.board)
         self.assertEqual(len(update.eliminations), 13*2)  # column and box (with 1 overlap removed)
@@ -21,7 +21,7 @@ class TestNakedDoubles(unittest.TestCase):
 
     def test_row_only(self):
         golden_coordinates = ["B1", "C1", "E1", "F1", "G1", "H1", "I1"]
-        s = "[{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 3, \"y\": 0, \"candidates\": [2, 3]}]"
+        s = "{\"cells\": [{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 3, \"y\": 0, \"candidates\": [2, 3]}]}"
         self.board.load_json(s)
         update = self.rule.find_update(self.board)
         self.assertEqual(len(update.eliminations), 7*2)
@@ -33,7 +33,7 @@ class TestNakedDoubles(unittest.TestCase):
     
     def test_box_only(self):
         golden_coordinates = ["A2", "A3", "B1", "B3", "C1", "C2", "C3"]
-        s = "[{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 1, \"y\": 1, \"candidates\": [2, 3]}]"
+        s = "{\"cells\": [{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 1, \"y\": 1, \"candidates\": [2, 3]}]}"
         self.board.load_json(s)
         update = self.rule.find_update(self.board)
         self.assertEqual(len(update.eliminations), 7*2)
@@ -45,7 +45,7 @@ class TestNakedDoubles(unittest.TestCase):
     
     def test_col_only(self):
         golden_coordinates = ["A2", "A3", "A4", "A6", "A7", "A8", "A9"]
-        s = "[{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 0, \"y\": 4, \"candidates\": [2, 3]}]"
+        s = "{\"cells\": [{\"x\": 0, \"y\": 0, \"candidates\": [2, 3]}, {\"x\": 0, \"y\": 4, \"candidates\": [2, 3]}]}"
         self.board.load_json(s)
         update = self.rule.find_update(self.board)
         self.assertEqual(len(update.eliminations), 7*2)

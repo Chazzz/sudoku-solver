@@ -1,5 +1,7 @@
 import core.rules.naked_singles
 import core.rules.hidden_singles
+import core.rules.naked_doubles
+import core.rules.hidden_doubles
 from core.rules.rule import Rule
 
 class Solver:
@@ -8,7 +10,6 @@ class Solver:
         return
 
     def solve(self, board):
-        board.cells[0].candidates = [1]
         n = sum([len(c.candidates) for c in board])
         print(f"Solving puzzle, candidates remaining: {n}/729")
         solving = True
