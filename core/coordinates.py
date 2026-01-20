@@ -19,6 +19,17 @@ class Coordinates:
         else:
             raise ValueError("Column name not supported %s", i)
     
+    def loc(self):
+        return [self.x, self.y]
+
+    def __eq__(self, other):
+        if not isinstance(other, Coordinates):
+            return NotImplemented
+        return (
+            self.x == other.x and
+            self.y == other.y and
+            self.candidates == other.candidates)
+    
     def __str__(self):
         if self.x >= len(self.col_names):
             raise ValueError(f"{self.x} out of range of coordinate indexing")
