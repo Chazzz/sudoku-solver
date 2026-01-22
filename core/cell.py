@@ -13,4 +13,12 @@ class Cell(Coordinates):
 
     def __repr__(self):
         return super().__str__()
+
+    def __eq__(self, other):
+        if not isinstance(other, Cell):
+            return NotImplemented
+        return (
+            self.x == other.x and
+            self.y == other.y and
+            self.candidates == other.candidates)
     
