@@ -18,5 +18,5 @@ Unsolved puzzle, candidates remaining: 729/729
 
 Test:
 ```
-$ python3 -m unittest discover
+python3 -m unittest discover
 ```

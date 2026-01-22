@@ -15,9 +15,20 @@ class Coordinates:
 
     def col_to_int(x):
         if x in i:
-            i = col_names.index(x)
+            i = Coordinates.col_names.index(x)
         else:
             raise ValueError("Column name not supported %s", i)
+
+    def int_to_col(x):
+        if x >= len(Coordinates.col_names):
+            raise ValueError("Column name out of bounds %d", x)
+        return Coordinates.col_names[x]
+    
+    def int_to_row(x):
+        return x+1
+    
+    def row_to_int(x):
+        return x-1
     
     def loc(self):
         return [self.x, self.y]
@@ -27,8 +38,7 @@ class Coordinates:
             return NotImplemented
         return (
             self.x == other.x and
-            self.y == other.y and
-            self.candidates == other.candidates)
+            self.y == other.y)
     
     def __str__(self):
         if self.x >= len(self.col_names):
