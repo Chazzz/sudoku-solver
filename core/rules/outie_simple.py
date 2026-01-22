@@ -208,8 +208,6 @@ class OutieSimple(Rule):
             # Join all but last with comma, then "and last"
             return f"{', '.join(str(x) for x in boxes[:-1])}, and {boxes[-1]}"
 
-
-
     def get_row_eliminations(self, board, single_cell):
         eliminations = []
         value = single_cell.candidates[0]
