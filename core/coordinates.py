@@ -44,5 +44,8 @@ class Coordinates:
         if self.x >= len(self.col_names):
             raise ValueError(f"{self.x} out of range of coordinate indexing")
         return self.col_names[self.x]+str(self.y+1)
+    
+    def __hash__(self):
+        return hash((self.x, self.y))
 
     
