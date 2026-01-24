@@ -4,3 +4,6 @@ class Cage:
             coordinates = []
         self.coordinates = coordinates
         self.sum = sum
+    
+    def __str__(self):
+        return f"{[str(c) for c in self.coordinates]} with sum {self.sum}"
