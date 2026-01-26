@@ -2,8 +2,7 @@ from .rule import Rule
 from core.update import Update
 from core.cell import Cell
 from core.coordinates import Coordinates
-from core.utils import english_list
-from functools import cache
+from core.utils import english_list, cell_combos
 
 class EasyCombinations(Rule):
     rule_name = "Killer Easy Combinations"
@@ -27,7 +26,7 @@ class EasyCombinations(Rule):
 
     def check_empty_cage(self, cage, board):    
         key = (len(cage.coordinates), cage.sum)
-        combos = self.cell_combos[key]
+        combos = cell_combos[key]
         valid_values_set = set()
         for combo in combos:
             for v in combo:
@@ -61,7 +60,7 @@ class EasyCombinations(Rule):
                     single_coordinates.append(Coordinates(c.x, c.y))
         
         key = (len(cage.coordinates) - len(singles), cage.sum - sum(singles))
-        combos = self.cell_combos[key]
+        combos = cell_combos[key]
         valid_values_set = set()
         for combo in combos:
             if any(v in singles for v in combo):
@@ -82,22 +81,4 @@ class EasyCombinations(Rule):
     def cage_with_singles_explanation(self, cage, singles, single_coordinates, valid_values):
         coord_str = [str(c) for c in single_coordinates]
         return f"Cage {cage} with values {singles} at {coord_str} can only be completed using values {english_list(valid_values)}."
-
-
-    @property
-    @cache
-    def cell_combos(self):
-        # {(size, sum): [combos]}
-        cell_combos = {}
-        for i in range(1, 2 ** 9):
-            combo = []
-            for j in range(9):
-                if i // (2 ** j) % 2 == 1:
-                    combo.append(j + 1)
-            key = (len(combo), sum(combo))
-            if key in cell_combos:
-                cell_combos[key].append(combo)
-            else:
-                cell_combos[key] = [combo]
-        return cell_combos
 
