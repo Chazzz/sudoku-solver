@@ -563,3 +563,12 @@ class TestInnieSimple(unittest.TestCase):
             self.assertEqual(e.candidates, [1, 2, 3, 4, 5, 7, 8, 9])
         self.assertEqual(update.rule_name, "Killer Innie (1 cell)")
         self.assertEqual(update.explanation, "Boxes (1, 0) and (1, 1) form a cage which adds to 90, and all cages containing the boxes except for F6 sum to 84, making F6 equal to 6.")
+
+    def test_innie_filled_in(self):
+        self.board.load_json(self.two_boxes_with_6_innie)
+        for c in self.board:
+            if c.x == 5 and c.y == 5:
+                c.candidates = [6]
+        update = self.rule.find_update(self.board)
+        self.assertIsNone(update.eliminations)
+

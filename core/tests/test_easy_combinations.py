@@ -118,3 +118,13 @@ class TestEasyCombinations(unittest.TestCase):
             self.assertEqual(e.candidates, [4, 5, 6, 7])
         self.assertEqual(update.rule_name, "Killer Easy Combinations")
         self.assertEqual(update.explanation, "Cage ['A2', 'B2', 'C2'] with sum 20 with values [3] at ['B2'] can only be completed using values 8 and 9.")
+
+    def test_basic_case_filled_in(self):
+        self.board.load_json(self.one_three_cage)
+        for c in self.board:
+            if c.x == 0 and c.y == 0:
+                c.candidates = [1]
+            if c.x == 1 and c.y == 0:
+                c.candidates = [2]
+        update = self.rule.find_update(self.board)
+        self.assertIsNone(update.eliminations)

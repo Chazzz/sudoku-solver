@@ -9,25 +9,32 @@ class Solver:
         self.rules = [cls() for cls in Rule.__subclasses__()]
         return
 
-    def solve(self, board):
+    def solve(self, board, debug=False):
         n = sum([len(c.candidates) for c in board])
-        print(f"Solving puzzle, candidates remaining: {n}/729")
+        if debug:
+            print(f"Solving puzzle, candidates remaining: {n}/729")
         solving = True
         while solving:
-            solving = self.solve_once(board)
+            solving = self.solve_once(board, debug)
         if self.is_completed(board):
-            print("solved puzzle")
+            if debug:
+                print(board.candidates_grid_string())
+                print("solved puzzle")
         else:
-            n = sum([len(c.candidates) for c in board])
-            print(f"Unsolved puzzle, candidates remaining: {n}/729")
+            if debug:
+                n = sum([len(c.candidates) for c in board])
+                print(f"Unsolved puzzle, candidates remaining: {n}/729")
 
-    def solve_once(self, board):
+    def solve_once(self, board, debug=False):
         update = None
         for rule in self.rules:
             update = rule.find_update(board)
             if update.eliminations:
                 break
         if update and update.eliminations:
+            if debug:
+                print(board.candidates_grid_string())
+                print(update.rule_name, update.explanation, [(e, e.candidates) for e in update.eliminations])
             board = self.apply_eliminations(board, update)
             return True
         return False

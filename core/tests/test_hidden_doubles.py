@@ -19,6 +19,20 @@ class TestHiddenDoubles(unittest.TestCase):
         self.assertEqual(update.rule_name, "Hidden Doubles")
         self.assertEqual(update.explanation, "Given 8 and 9 are only possible in A1 and C3 for all cells in that box, those cell must be 8 and 9.")
 
+    def test_hidden_box_partial(self):
+        for c in self.board:
+            if c.x < 3 and c.y < 3 and not (str(c) in ["A1", "C3"]):
+                c.candidates = list(range(1,8))  # missing 8, 9
+            if (str(c) in ["A1"]):
+                c.candidates = [8, 9]
+        update = self.rule.find_update(self.board)
+        self.assertEqual(len(update.eliminations), 1)
+        for e in update.eliminations:
+            self.assertTrue(str(e) in ["C3"])
+            self.assertEqual(e.candidates, list(range(1,8)))
+        self.assertEqual(update.rule_name, "Hidden Doubles")
+        self.assertEqual(update.explanation, "Given 8 and 9 are only possible in A1 and C3 for all cells in that box, those cell must be 8 and 9.")
+
     def test_hidden_row(self):
         for c in self.board:
             if c.y == 0 and not (str(c) in ["A1", "D1"]):

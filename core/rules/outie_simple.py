@@ -48,7 +48,10 @@ class OutieSimple(Rule):
         value = combined_cage.sum - row_sum
         for c in board:
             if Coordinates(c.x, c.y) in outie_coords:
-                eliminations = [Cell(c.x, c.y, [v for v in c.candidates if v != value])]
+                eliminated_values = [v for v in c.candidates if v != value]
+                if not eliminated_values:
+                    continue
+                eliminations = [Cell(c.x, c.y, eliminated_values)]
                 explanation = self.get_row_explanation(board, row_start, row_end, c, value)
                 return Update(self.rule_name, explanation, eliminations)
         
@@ -97,7 +100,10 @@ class OutieSimple(Rule):
         value = combined_cage.sum - col_sum
         for c in board:
             if Coordinates(c.x, c.y) in outie_coords:
-                eliminations = [Cell(c.x, c.y, [v for v in c.candidates if v != value])]
+                eliminated_values = [v for v in c.candidates if v != value]
+                if not eliminated_values:
+                    continue
+                eliminations = [Cell(c.x, c.y, eliminated_values)]
                 explanation = self.get_col_explanation(board, col_start, col_end, c, value)
                 return Update(self.rule_name, explanation, eliminations)
         
@@ -180,7 +186,10 @@ class OutieSimple(Rule):
         value = combined_cage.sum - box_sum
         for c in board:
             if Coordinates(c.x, c.y) in outie_coords:
-                eliminations = [Cell(c.x, c.y, [v for v in c.candidates if v != value])]
+                eliminated_values = [v for v in c.candidates if v != value]
+                if not eliminated_values:
+                    continue
+                eliminations = [Cell(c.x, c.y, eliminated_values)]
                 explanation = self.get_box_explanation(board, boxes, c, value)
                 return Update(self.rule_name, explanation, eliminations)
 

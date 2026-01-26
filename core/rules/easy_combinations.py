@@ -58,7 +58,8 @@ class EasyCombinations(Rule):
                 if len(c.candidates) == 1:
                     singles.append(c.candidates[0])
                     single_coordinates.append(Coordinates(c.x, c.y))
-        
+        if len(single_coordinates) == len(cage.coordinates):
+            return
         key = (len(cage.coordinates) - len(singles), cage.sum - sum(singles))
         combos = cell_combos[key]
         valid_values_set = set()

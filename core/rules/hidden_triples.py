@@ -65,11 +65,16 @@ class HiddenTriples(Rule):
         triplet_cells = sorted({c for v in triplet for c in cells if v in c.candidates})
         if len(triplet_cells) == 3:
             if (any(v for c in triplet_cells for v in c.candidates if v not in triplet)):
-                eliminations = [Cell(c.x, c.y, [v for v in c.candidates if v not in triplet]) for c in triplet_cells]
-                return Update(
-                    self.rule_name,
-                    self.get_explanation(triplet_cells, unit_name, triplet),
-                    eliminations)
+                eliminations = []
+                for c in triplet_cells:
+                    eliminated_values = [v for v in c.candidates if v not in triplet]
+                    if eliminated_values:
+                        eliminations.append(Cell(c.x, c.y, eliminated_values))
+                if eliminations:
+                    return Update(
+                        self.rule_name,
+                        self.get_explanation(triplet_cells, unit_name, triplet),
+                        eliminations)
 
     def get_explanation(self, cells, unit_name, values):
         return f"Given {self.english_list(values)} are only possible in {self.english_list(cells)} for all cells in that {unit_name}, those cell must be {self.english_list(values)}."

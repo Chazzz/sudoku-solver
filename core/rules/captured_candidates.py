@@ -27,7 +27,8 @@ class CapturedCandidates(Rule):
                     single_coordinates.append(Coordinates(c.x, c.y))
                 else:
                     captured_coords.append(Coordinates(c.x, c.y))
-
+        if not captured_coords:
+            return
         key = (len(cage.coordinates) - len(singles), cage.sum - sum(singles))
         combos = cell_combos[key]
         captured_set = set(range(1,10))

@@ -22,8 +22,13 @@ class HiddenDoubles(Rule):
                     max(len(cell1.candidates), len(cell2.candidates)) > 2):
                     is_hidden, values = self.check_hidden(board, cell1, cell2)
                     if is_hidden:
-                        eliminations = [Cell(c.x, c.y, [v for v in c.candidates if v in values]) for c in [cell1, cell2]]
-                        return Update(self.rule_name, self.get_explanation(board, cell1, cell2, values), eliminations)
+                        eliminations = []
+                        for c in [cell1, cell2]:
+                            eliminated_values = [v for v in c.candidates if v in values]
+                            if eliminated_values:
+                                eliminations.append(Cell(c.x, c.y, eliminated_values))
+                        if eliminations:
+                            return Update(self.rule_name, self.get_explanation(board, cell1, cell2, values), eliminations)
         return Update(self.rule_name)
 
     def check_hidden(self, board, cell1, cell2):
@@ -64,7 +69,6 @@ class HiddenDoubles(Rule):
         return sorted(values)
 
     def get_explanation(self, board, cell1, cell2, values_eliminated):
-        
         location = ""
         values_remaining = []
         if cell1.y == cell2.y:
