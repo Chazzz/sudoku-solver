@@ -36,4 +36,40 @@ class Board:
                 coordinates = [Coordinates(c["x"], c["y"]) for c in cage_dict["coordinates"]]
                 cage = Cage(coordinates, cage_dict["sum"])
                 self.cages.append(cage)
+    
+    def candidates_grid_string(self):
+        out = ""
+        for row in range(9):
+            out += "·-----" * 9 + "·\n"
+            for col in range(9):
+                out += "| "
+                for c in self.cells:
+                    if c.x == col and c.y == row:
+                        out += "1" if 1 in c.candidates else " "
+                        out += "2" if 2 in c.candidates else " "
+                        out += "3" if 3 in c.candidates else " "
+                out += " "
+            out += "|\n"
+            for col in range(9):
+                out += "| "
+                for c in self.cells:
+                    if c.x == col and c.y == row:
+                        out += "4" if 4 in c.candidates else " "
+                        out += "5" if 5 in c.candidates else " "
+                        out += "6" if 6 in c.candidates else " "
+                out += " "
+            out += "|\n"
+            for col in range(9):
+                out += "| "
+                for c in self.cells:
+                    if c.x == col and c.y == row:
+                        out += "7" if 7 in c.candidates else " "
+                        out += "8" if 8 in c.candidates else " "
+                        out += "9" if 9 in c.candidates else " "
+                out += " "
+            out += "|\n"
+        out += "·-----" * 9 + "·"
+        return out
+
+
 

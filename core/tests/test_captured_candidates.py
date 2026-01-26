@@ -106,3 +106,16 @@ class TestCapturedCandidates(unittest.TestCase):
             self.assertEqual(e.candidates, [9])
         self.assertEqual(update.rule_name, "Killer Captured Candidates")
         self.assertEqual(update.explanation, "Given cage ['D5', 'E5', 'E6'] with sum 22, all valid combinations place 9 in D5, E5, and E6. Therefore, all other cells in the same box can't have that value.")
+
+    def test_completed_box(self):
+        self.board.load_json(self.box_twenty_two_cage)
+        for c in self.board:
+            if c.x == 3 and c.y == 4:
+                c.candidates = [9]
+            if c.x == 4 and c.y == 4:
+                c.candidates = [8]
+            if c.x == 4 and c.y == 5:
+                c.candidates = [5]
+        update = self.rule.find_update(self.board)
+        self.assertIsNone(update.eliminations)
+        
