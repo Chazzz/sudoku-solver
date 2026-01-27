@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class PointingPairs(Rule):
     rule_name = "Pointing Pairs"
+    as_score = 20
+    cg_score = 1
 
     # for each box
     # for each number

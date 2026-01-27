@@ -7,6 +7,8 @@ from functools import cache
 
 class OutieSimple(Rule):
     rule_name = "Killer Outie (1 cell)"
+    as_score = 5
+    cg_score = 40
 
     # for each row, column and box
     # get all cages in that 9-group

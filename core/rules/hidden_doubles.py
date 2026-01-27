@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class HiddenDoubles(Rule):
     rule_name = "Hidden Doubles"
+    as_score = 10
+    cg_score = 10
 
     # consider each row, column, and box
     # If only one cell in that unit has a given candidate,

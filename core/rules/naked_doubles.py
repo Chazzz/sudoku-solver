@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class NakedDoubles(Rule):
     rule_name = "Naked Doubles"
+    as_score = 5
+    cg_score = 5
 
     # find doubles (two cells with the same two possibilities)
     # if any other cell in same row, column, or box has that candidate,

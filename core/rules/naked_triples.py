@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class NakedTriples(Rule):
     rule_name = "Naked Triples"
+    as_score = 10
+    cg_score = 10
 
     # consider each unit (row, column, and box)
     # If three cells in that unit have the same three candidates,
