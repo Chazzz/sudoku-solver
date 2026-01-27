@@ -1,6 +1,11 @@
 # sudoku-solver
 Solver for sudoku and killer sudoku
 
+Test:
+```
+python3 -m unittest discover
+```
+
 Example usage:
 ```
 $ python3 main.py
@@ -88,9 +93,4 @@ Enter puzzle json:{"cages": [{"coordinates": [{"x": 0, "y": 0}, {"x": 0, "y": 1}
 | 789 | 7   | 789 | 789 | 789 | 789 | 789 | 789 | 789 |
 ·-----·-----·-----·-----·-----·-----·-----·-----·-----·
 Unsolved puzzle, candidates remaining: 657/729
-```
-
-Test:
-```
-python3 -m unittest discover
 ```
