@@ -3,6 +3,8 @@ from core.update import Update
 
 class Rule:
     rule_name = "Parent"
+    as_score = 0
+    cg_score = 0
     
     def find_update(self, board):
         return Update(self.rule_name)

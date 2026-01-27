@@ -5,7 +5,7 @@ def main():
     b = Board()
     b.import_from_command_line()
     s = Solver()
-    s.solve(b)
+    s.solve(b, debug=True)
 
 if __name__ == "__main__":
     main()

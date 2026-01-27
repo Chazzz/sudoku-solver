@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class BoxReduction(Rule):
     rule_name = "Box Reduction"
+    as_score = 20
+    cg_score = 5
 
     # for each row/column
     # for each number

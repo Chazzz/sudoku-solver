@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class HiddenTriples(Rule):
     rule_name = "Hidden Triples"
+    as_score = 25
+    cg_score = 10
 
     # consider each unit (row, column, and box)
     # If three candidates can only be in three cells in that unit,

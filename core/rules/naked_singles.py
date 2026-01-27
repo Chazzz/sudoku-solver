@@ -4,6 +4,8 @@ from core.cell import Cell
 
 class NakedSingles(Rule):
     rule_name = "Naked Singles"
+    as_score = 1
+    cg_score = 1
 
     # find single
     # if any cell in same row, column, or box has that candidate, add that as an elimination.

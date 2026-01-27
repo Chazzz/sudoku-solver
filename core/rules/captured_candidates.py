@@ -6,6 +6,8 @@ from core.utils import cell_combos, english_list
 
 class CapturedCandidates(Rule):
     rule_name = "Killer Captured Candidates"
+    as_score = 20
+    cg_score = 15
 
     # If a candidate has to be in a specific cage, remove it from qualified rows/columns/box
     # Cage-by-cage helps make sure that the coordinates that are captured are not already singles. 

@@ -1,12 +1,47 @@
-import core.rules.naked_singles
-import core.rules.hidden_singles
-import core.rules.naked_doubles
-import core.rules.hidden_doubles
 from core.rules.rule import Rule
+import core.rules
+import pkgutil
+import importlib
+import inspect
 
 class Solver:
     def __init__(self):
-        self.rules = [cls() for cls in Rule.__subclasses__()]
+        # Debug code to generate cg scores
+        # CG scores are based on lines of code as a proxy for complexity
+        # result = {}
+        # for m in pkgutil.iter_modules(core.rules.__path__, core.rules.__name__ + "."):
+        #     mod = importlib.import_module(m.name)
+
+        #     classes = [
+        #         cls
+        #         for _, cls in inspect.getmembers(mod, inspect.isclass)
+        #         if cls.__module__ == mod.__name__
+        #     ]
+
+        #     if len(classes) != 1:
+        #         raise AssertionError(
+        #             f"{m.name} defines {len(classes)} classes; expected exactly 1"
+        #         )
+
+        #     cls = classes[0]
+        #     try:
+        #         source = inspect.getsource(cls)
+        #     except OSError:
+        #         continue
+
+        #     result[m.name] = {
+        #         "class": cls.__name__,
+        #         "cg_score": cls.cg_score,
+        #         "lines": len(source.splitlines()),
+        #     }
+        # s = sorted(result, key=lambda x: result[x]['lines'])
+        # for v in s:
+        #     print(result[v])
+
+        for m in pkgutil.iter_modules(core.rules.__path__, core.rules.__name__ + "."):
+            mod = importlib.import_module(m.name)
+
+        self.rules = sorted([cls() for cls in Rule.__subclasses__()], key=lambda x: x.cg_score)
         return
 
     def solve(self, board, debug=False):
@@ -23,6 +58,7 @@ class Solver:
         else:
             if debug:
                 n = sum([len(c.candidates) for c in board])
+                print(board.candidates_grid_string())
                 print(f"Unsolved puzzle, candidates remaining: {n}/729")
 
     def solve_once(self, board, debug=False):
