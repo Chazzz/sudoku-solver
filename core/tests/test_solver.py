@@ -1144,10 +1144,8 @@ class TestBoard(unittest.TestCase):
     #     # print(f"Solving puzzle, candidates remaining: {n}/729")
     #     solving = True
     #     while solving:
-    #         solving = self.solver.solve_once(self.board)
+    #         solving = self.solver.solve_once(self.board, debug=True)
     #         for c in self.board:
-    #             if c.x == 6 and c.y == 2:
-    #                 print(c.candidates)
     #             if len(c.candidates) == 0:
     #                 solving = False
     #             if len(c.candidates) == 1:
