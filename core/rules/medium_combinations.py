@@ -7,7 +7,7 @@ from core.utils import english_list, cell_combos
 class MediumCombinations(Rule):
     rule_name = "Killer Medium Combinations"
     as_score = 5
-    cg_score = 10
+    cg_score = 1000  # previously 10
 
     # Medium combinations eliminate any combinations
     # where all values of the combinations cannot be found in the cage

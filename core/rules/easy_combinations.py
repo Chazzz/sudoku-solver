@@ -7,7 +7,7 @@ from core.utils import english_list, cell_combos
 class EasyCombinations(Rule):
     rule_name = "Killer Easy Combinations"
     as_score = 5
-    cg_score = 5
+    cg_score = 1000  # previously 5
 
     # Easy combinations are two things:
     # 1: Obvious based on empty cage (eg. 17 size 2)
