@@ -26,12 +26,15 @@ class CageSplittingBasic(Rule):
         for c in board:
             if Coordinates(c.x, c.y) in cage.coordinates:
                 if len(c.candidates) == 1:
+                    if len(cage.subcages) == 0:
+                        scs = self.split_cage(cage, c)
+                        return self.make_update(cage, c, scs)
                     scs = []
                     needs_update = True
                     for sc in cage.subcages:
                         if Coordinates(c.x, c.y) in sc.coordinates:
                             if len(sc.coordinates) != 1:
-                                scs += self.split_subcage(sc, c)
+                                scs += self.split_cage(sc, c)
                             else:
                                 needs_update = False
                         else:
@@ -39,13 +42,13 @@ class CageSplittingBasic(Rule):
                     if needs_update:
                         return self.make_update(cage, c, scs)
 
-    def split_subcage(self, subcage, cell):
-        single = Cage(Coordinates(cell.x, cell.y), cell.candidates[0])
+    def split_cage(self, cage, cell):
+        single = Cage([Coordinates(cell.x, cell.y)], cell.candidates[0])
         others = []
-        for c in subcage.coordinates:
+        for c in cage.coordinates:
             if c != Coordinates(cell.x, cell.y):
                 others.append(c)
-        other_sum = subcage.sum - single.sum
+        other_sum = cage.sum - single.sum
         other_cage = Cage(others, other_sum)
         return [single, other_cage]
 
