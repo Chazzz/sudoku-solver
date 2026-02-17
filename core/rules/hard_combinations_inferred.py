@@ -7,7 +7,7 @@ from core.utils import english_list, cell_combos
 class HardCombinationsInferred(HardCombinations):
     rule_name = "Killer Hard Combinations (Inferred)"
     as_score = 10
-    cg_score = 5
+    cg_score = 10
 
     # Same as hard combinations, but with inferred cages
     def find_update(self, board):

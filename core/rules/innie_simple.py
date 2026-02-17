@@ -3,6 +3,7 @@ from core.update import Update
 from core.cell import Cell
 from core.cage import Cage
 from core.coordinates import Coordinates
+from core.utils import english_list
 from functools import cache
 
 class InnieSimple(Rule):
@@ -37,6 +38,9 @@ class InnieSimple(Rule):
         for cage in board.cages:
             if any(row_start <= c.y <= row_end for c in cage.coordinates):
                 row_cages.append(cage)
+        return self.check_row_cages(board, row_start, row_end, row_cages)
+
+    def check_row_cages(self, board, row_start, row_end, row_cages):
         num_rows = 1 + row_end - row_start
         for i, v in enumerate(row_cages):
             innie_coords = [c for c in v.coordinates if (row_start <= c.y <= row_end)]
@@ -93,6 +97,9 @@ class InnieSimple(Rule):
         for cage in board.cages:
             if any(col_start <= c.x <= col_end for c in cage.coordinates):
                 col_cages.append(cage)
+        return self.check_col_cages(board, col_start, col_end, col_cages)
+
+    def check_col_cages(self, board, col_start, col_end, col_cages):
         num_cols = 1 + col_end - col_start
         for i, v in enumerate(col_cages):
             innie_coords = [c for c in v.coordinates if (col_start <= c.x <= col_end)]
@@ -184,6 +191,9 @@ class InnieSimple(Rule):
         for cage in board.cages:
             if any(self.in_boxes(c, boxes) for c in cage.coordinates):
                 box_cages.append(cage)
+        return self.check_box_cages(board, boxes, box_cages)
+
+    def check_box_cages(self, board, boxes, box_cages):
         num_boxes = len(boxes)
         box_sum = 45 * num_boxes
         for i, v in enumerate(box_cages):
@@ -217,25 +227,12 @@ class InnieSimple(Rule):
         box_text = ""
         box_sum_text = ""
         if len(boxes) == 1:
-            box_text = f"Box {self.english_list(boxes)} forms a cage which adds to {box_sum}"
+            box_text = f"Box {english_list(boxes)} forms a cage which adds to {box_sum}"
             box_sum_text = f"and all cages containing the box except for {c} sum to {combined_cage_sum}"
         else:
-            box_text = f"Boxes {self.english_list(boxes)} form a cage which adds to {box_sum}"
+            box_text = f"Boxes {english_list(boxes)} form a cage which adds to {box_sum}"
             box_sum_text = f"and all cages containing the boxes except for {c} sum to {combined_cage_sum}"
         return f"{box_text}, {box_sum_text}, making {c} equal to {value}."
-
-    def english_list(self, boxes):
-        if not boxes:
-            return ""
-        elif len(boxes) == 1:
-            return str(boxes[0])
-        elif len(boxes) == 2:
-            return f"{boxes[0]} and {boxes[1]}"
-        else:
-            # Join all but last with comma, then "and last"
-            return f"{', '.join(str(x) for x in boxes[:-1])}, and {boxes[-1]}"
-
-
 
     def get_row_eliminations(self, board, single_cell):
         eliminations = []
