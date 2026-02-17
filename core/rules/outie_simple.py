@@ -35,6 +35,9 @@ class OutieSimple(Rule):
         for cage in board.cages:
             if any(row_start <= c.y <= row_end for c in cage.coordinates):
                 row_cages.append(cage)
+        return self.check_row_cages(board, row_start, row_end, row_cages)
+
+    def check_row_cages(self, board, row_start, row_end, row_cages):
         combined_cage = Cage()
         for cage in row_cages:
             for c in cage.coordinates:
@@ -87,6 +90,9 @@ class OutieSimple(Rule):
         for cage in board.cages:
             if any(col_start <= c.x <= col_end for c in cage.coordinates):
                 col_cages.append(cage)
+        return self.check_col_cages(board, col_start, col_end, col_cages)
+
+    def check_col_cages(self, board, col_start, col_end, col_cages):
         combined_cage = Cage()
         for cage in col_cages:
             for c in cage.coordinates:
@@ -173,6 +179,9 @@ class OutieSimple(Rule):
         for cage in board.cages:
             if any(self.in_boxes(c, boxes) for c in cage.coordinates):
                 box_cages.append(cage)
+        return self.check_box_cages(board, boxes, box_cages)
+
+    def check_box_cages(self, board, boxes, box_cages):
         combined_cage = Cage()
         for cage in box_cages:
             for c in cage.coordinates:
