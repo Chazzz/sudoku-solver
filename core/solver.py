@@ -71,7 +71,13 @@ class Solver:
             if debug:
                 print(board.candidates_grid_string())
                 print(update.rule_name, update.explanation, [(e, e.candidates) for e in update.eliminations])
-            board = self.apply_eliminations(board, update)
+            self.apply_eliminations(board, update)
+            return True
+        if update and update.cages:
+            if debug:
+                print(board.candidates_grid_string())
+                print(update.rule_name, update.explanation, [(c, c.subcages) for c in update.cages])
+            self.apply_cages(board, update)
             return True
         return False
 
@@ -81,7 +87,12 @@ class Solver:
                 if c.x == elimination.x and c.y == elimination.y:
                     c.candidates = [i for i in c.candidates
                         if i not in elimination.candidates]
-        return board
+    
+    def apply_cages(self, board, cages):
+        for cage in cages:
+            for c in board.cages:
+                if all(coord in cage.coordinates for coord in c):
+                    c.subcages = cage.subcages
     
     def is_completed(self, board):
         for c in board:
