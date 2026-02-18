@@ -91,7 +91,7 @@ class Solver:
     def apply_cages(self, board, cages):
         for cage in cages:
             for c in board.cages:
-                if all(coord in cage.coordinates for coord in c):
+                if cage in c:
                     c.subcages = cage.subcages
     
     def is_completed(self, board):
