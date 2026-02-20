@@ -3,12 +3,13 @@ from core.update import Update
 from core.cell import Cell
 from core.cage import Cage
 from core.coordinates import Coordinates
+from core.utils import english_list
 from functools import cache
 
 class OutieSimple(Rule):
     rule_name = "Killer Outie (1 cell)"
     as_score = 5
-    cg_score = 40
+    cg_score = 35
 
     # for each row, column and box
     # get all cages in that 9-group
@@ -210,54 +211,9 @@ class OutieSimple(Rule):
         box_text = ""
         box_sum_text = ""
         if len(boxes) == 1:
-            box_text = f"Box {self.english_list(boxes)} forms a cage which adds to {box_sum}"
+            box_text = f"Box {english_list(boxes)} forms a cage which adds to {box_sum}"
             box_sum_text = f"and all cages containing the box sum to {combined_cage_sum}"
         else:
-            box_text = f"Boxes {self.english_list(boxes)} form a cage which adds to {box_sum}"
+            box_text = f"Boxes {english_list(boxes)} form a cage which adds to {box_sum}"
             box_sum_text = f"and all cages containing the boxes sum to {combined_cage_sum}"
         return f"{box_text}, {box_sum_text}, making {c}, the only outside cell, equal to {value}."
-
-    def english_list(self, boxes):
-        if not boxes:
-            return ""
-        elif len(boxes) == 1:
-            return str(boxes[0])
-        elif len(boxes) == 2:
-            return f"{boxes[0]} and {boxes[1]}"
-        else:
-            # Join all but last with comma, then "and last"
-            return f"{', '.join(str(x) for x in boxes[:-1])}, and {boxes[-1]}"
-
-    def get_row_eliminations(self, board, single_cell):
-        eliminations = []
-        value = single_cell.candidates[0]
-        for c in board:
-            if c.y == single_cell.y and c.x != single_cell.x:
-                if value in c.candidates:
-                    eliminations.append(Cell(c.x, c.y, [value]))
-        return eliminations
-
-    def get_col_eliminations(self, board, single_cell):
-        eliminations = []
-        value = single_cell.candidates[0]
-        for c in board:
-            if c.x == single_cell.x and c.y != single_cell.y:
-                if value in c.candidates:
-                    eliminations.append(Cell(c.x, c.y, [value]))
-        return eliminations
-
-    def get_box_eliminations(self, board, single_cell):
-        eliminations = []
-        value = single_cell.candidates[0]
-        for c in board:
-            if c.x // 3 == single_cell.x // 3 and c.y // 3 == single_cell.y // 3:
-                # Ignore overlapping same-row and same-col eliminations
-                if c.x != single_cell.x and c.y != single_cell.y:
-                    if value in c.candidates:
-                        eliminations.append(Cell(c.x, c.y, [value]))
-        return eliminations
-
-    def get_explanation(self, c):
-        value = c.candidates[0]
-        return f"Given {c} can only be {value}, no cell in same row, column, or box can also be {value}."
-        

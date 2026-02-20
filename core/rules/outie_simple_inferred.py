@@ -8,7 +8,7 @@ from functools import cache
 class OutieSimpleInferred(OutieSimple):
     rule_name = "Killer Outie (1 cell, inferred)"
     as_score = 5
-    cg_score = 50
+    cg_score = 45
 
     def check_row_range(self, board, row_start, row_end):
         row_cages = []

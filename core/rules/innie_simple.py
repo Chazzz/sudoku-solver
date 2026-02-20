@@ -9,7 +9,7 @@ from functools import cache
 class InnieSimple(Rule):
     rule_name = "Killer Innie (1 cell)"
     as_score = 5
-    cg_score = 40
+    cg_score = 35
 
     # for each row, column and box
     # get all cages in that 9-group
