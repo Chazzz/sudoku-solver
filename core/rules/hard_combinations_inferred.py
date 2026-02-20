@@ -19,7 +19,7 @@ class HardCombinationsInferred(HardCombinations):
     def check_inferred_cages(self, board):
         for cage in board.cages:
             for subcage in cage.subcages:
-                update = self.check_cage(subcage, board)
+                update = self.check_cage_optimized(subcage, board)
                 if update:
                     return update
 
