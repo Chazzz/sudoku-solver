@@ -6,17 +6,17 @@ from core.coordinates import Coordinates
 from core.utils import english_list
 from functools import cache
 
-class InnieAdvanced(Rule):
-    rule_name = "Killer Innie (2+ cells)"
+class OutieAdvanced(Rule):
+    rule_name = "Killer Outie (2+ cells)"
     as_score = 30
     cg_score = 55
 
     # for each row, column and box
     # get all cages in that 9-group
     # Then look at all (n-1) subgroups
-    # For each group, innies are the cells
-    # inside the group in cages straddling the group
-    # Calculates the hard combinations for that innie
+    # For each group, outies are the cells
+    # outside the group in cages straddling the group
+    # Calculates the hard combinations for that outie
     def find_update(self, board):
         for check in (self.check_rows, self.check_cols, self.check_boxes):
             update = check(board)
@@ -47,11 +47,13 @@ class InnieAdvanced(Rule):
     def check_row_cages(self, board, row_start, row_end, row_cages):
         num_rows = 1 + row_end - row_start
         straddles = []
+        straddle_sum = 0
         for i, v in enumerate(row_cages):
             innie = [c for c in v.coordinates if (row_start <= c.y <= row_end)]
             outie = [c for c in v.coordinates if not (row_start <= c.y <= row_end)]
             if innie and outie:
                 straddles.append((i, innie, outie))
+                straddle_sum += v.sum
         indexes = [s[0] for s in straddles]
         innies = [c for s in straddles for c in s[1]]
         outies = [c for s in straddles for c in s[2]]
@@ -65,10 +67,11 @@ class InnieAdvanced(Rule):
         others = combined_cage.sum
         total = 45 * num_rows
         innie_value = total - others
-        eliminations = self.check_cells_optimized(innies, board, innie_value)
+        outie_value = straddle_sum - innie_value
+        eliminations = self.check_cells_optimized(outies, board, outie_value)
         if eliminations:
             explanation = self.get_row_explanation(
-                row_start, row_end, total, others, innies, innie_value, eliminations)
+                row_start, row_end, total, others, outies, outie_value, eliminations)
             return Update(self.rule_name, explanation, eliminations)
         
     def get_row_explanation(self, row_start, row_end, total, others, c, value, eliminations):
@@ -79,10 +82,10 @@ class InnieAdvanced(Rule):
         cells = f"{[str(v) for v in c]}"
         if x0 == x1:
             row_text = f"Row {x0} forms a cage which adds to {total}"
-            row_sum_text = f"and all cages containing the row except for {cells} sum to {others}"
+            row_sum_text = f"and all cages containing the row plus {cells} sum to {total + value}"
         else:
             row_text = f"Rows {x0}-{x1} form a cage which adds to {total}"
-            row_sum_text = f"and all cages containing the rows except for {cells} sum to {others}"
+            row_sum_text = f"and all cages containing the rows plus {cells} sum to {total + value}"
         unpacked = [Cell(c.x, c.y, [v]) for c in eliminations for v in c.candidates]
         unpacked_s = [f"{c.candidates[0]} at {str(c)}" for c in unpacked]
         value_text = f"The following values are never used to form a valid sum in cells {cells}: {english_list(unpacked_s)}."
@@ -111,11 +114,13 @@ class InnieAdvanced(Rule):
     def check_col_cages(self, board, col_start, col_end, col_cages):
         num_cols = 1 + col_end - col_start
         straddles = []
+        straddle_sum = 0
         for i, v in enumerate(col_cages):
             innie = [c for c in v.coordinates if (col_start <= c.x <= col_end)]
             outie = [c for c in v.coordinates if not (col_start <= c.x <= col_end)]
             if innie and outie:
                 straddles.append((i, innie, outie))
+                straddle_sum += v.sum
         indexes = [s[0] for s in straddles]
         innies = [c for s in straddles for c in s[1]]
         outies = [c for s in straddles for c in s[2]]
@@ -131,10 +136,11 @@ class InnieAdvanced(Rule):
         others = combined_cage.sum
         total = 45 * num_cols
         innie_value = total - others
-        eliminations = self.check_cells_optimized(innies, board, innie_value)
+        outie_value = straddle_sum - innie_value
+        eliminations = self.check_cells_optimized(outies, board, outie_value)
         if eliminations:
             explanation = self.get_col_explanation(
-                col_start, col_end, total, others, innies, innie_value, eliminations)
+                col_start, col_end, total, others, outies, outie_value, eliminations)
             return Update(self.rule_name, explanation, eliminations)
          
     def get_col_explanation(self, col_start, col_end, total, others, c, value, eliminations):
@@ -145,10 +151,10 @@ class InnieAdvanced(Rule):
         cells = f"{[str(v) for v in c]}"
         if y0 == y1:
             col_text = f"Column {y0} forms a cage which adds to {total}"
-            col_sum_text = f"and all cages containing the column except for {cells} sum to {others}"
+            col_sum_text = f"and all cages containing the column plus {cells} sum to {total + value}"
         else:
             col_text = f"Columns {y0}-{y1} form a cage which adds to {total}"
-            col_sum_text = f"and all cages containing the columns except for {cells} sum to {others}"
+            col_sum_text = f"and all cages containing the columns plus {cells} sum to {total + value}"
         unpacked = [Cell(c.x, c.y, [v]) for c in eliminations for v in c.candidates]
         unpacked_s = [f"{c.candidates[0]} at {str(c)}" for c in unpacked]
         value_text = f"The following values are never used to form a valid sum in cells {cells}: {english_list(unpacked_s)}."
@@ -212,11 +218,13 @@ class InnieAdvanced(Rule):
     def check_box_cages(self, board, boxes, box_cages):
         num_boxes = len(boxes)
         straddles = []
+        straddle_sum = 0
         for i, v in enumerate(box_cages):
             innie = [c for c in v.coordinates if self.in_boxes(c, boxes)]
             outie = [c for c in v.coordinates if not self.in_boxes(c, boxes)]
             if innie and outie:
                 straddles.append((i, innie, outie))
+                straddle_sum += v.sum
         indexes = [s[0] for s in straddles]
         innies = [c for s in straddles for c in s[1]]
         outies = [c for s in straddles for c in s[2]]
@@ -230,10 +238,11 @@ class InnieAdvanced(Rule):
         others = combined_cage.sum
         total = 45 * num_boxes
         innie_value = total - others
-        eliminations = self.check_cells_optimized(innies, board, innie_value)
+        outie_value = straddle_sum - innie_value
+        eliminations = self.check_cells_optimized(outies, board, outie_value)
         if eliminations:
             explanation = self.get_box_explanation(
-                boxes, total, others, innies, innie_value, eliminations)
+                boxes, total, others, outies, outie_value, eliminations)
             return Update(self.rule_name, explanation, eliminations)
 
     def get_box_explanation(self, boxes, total, others, c, value, eliminations):
@@ -242,10 +251,10 @@ class InnieAdvanced(Rule):
         cells = f"{[str(v) for v in c]}"
         if len(boxes) == 1:
             box_text = f"Box {english_list(boxes)} forms a cage which adds to {total}"
-            box_sum_text = f"and all cages containing the box except for {cells} sum to {others}"
+            box_sum_text = f"and all cages containing the box plus {cells} sum to {total + value}"
         else:
             box_text = f"Boxes {english_list(boxes)} form a cage which adds to {total}"
-            box_sum_text = f"and all cages containing the boxes except for {cells} sum to {others}"
+            box_sum_text = f"and all cages containing the boxes plus {cells} sum to {total + value}"
         unpacked = [Cell(c.x, c.y, [v]) for c in eliminations for v in c.candidates]
         unpacked_s = [f"{c.candidates[0]} at {str(c)}" for c in unpacked]
         value_text = f"The following values are never used to form a valid sum in cells {cells}: {english_list(unpacked_s)}."
