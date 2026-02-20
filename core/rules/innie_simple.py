@@ -233,37 +233,3 @@ class InnieSimple(Rule):
             box_text = f"Boxes {english_list(boxes)} form a cage which adds to {box_sum}"
             box_sum_text = f"and all cages containing the boxes except for {c} sum to {combined_cage_sum}"
         return f"{box_text}, {box_sum_text}, making {c} equal to {value}."
-
-    def get_row_eliminations(self, board, single_cell):
-        eliminations = []
-        value = single_cell.candidates[0]
-        for c in board:
-            if c.y == single_cell.y and c.x != single_cell.x:
-                if value in c.candidates:
-                    eliminations.append(Cell(c.x, c.y, [value]))
-        return eliminations
-
-    def get_col_eliminations(self, board, single_cell):
-        eliminations = []
-        value = single_cell.candidates[0]
-        for c in board:
-            if c.x == single_cell.x and c.y != single_cell.y:
-                if value in c.candidates:
-                    eliminations.append(Cell(c.x, c.y, [value]))
-        return eliminations
-
-    def get_box_eliminations(self, board, single_cell):
-        eliminations = []
-        value = single_cell.candidates[0]
-        for c in board:
-            if c.x // 3 == single_cell.x // 3 and c.y // 3 == single_cell.y // 3:
-                # Ignore overlapping same-row and same-col eliminations
-                if c.x != single_cell.x and c.y != single_cell.y:
-                    if value in c.candidates:
-                        eliminations.append(Cell(c.x, c.y, [value]))
-        return eliminations
-
-    def get_explanation(self, c):
-        value = c.candidates[0]
-        return f"Given {c} can only be {value}, no cell in same row, column, or box can also be {value}."
-        
