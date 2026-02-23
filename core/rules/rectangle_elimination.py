@@ -45,7 +45,7 @@ class RectangleElimination(Rule):
 
     def get_row_eliminations(self, board, hinge, non_hinge, value):
         for c in board:
-            if c.x == hinge.x:
+            if c.x == hinge.x and c.y != hinge.y and value in c.candidates:
                 if not self.legal_arrangement(board, c, non_hinge, value):
                     return [Cell(c.x, c.y, [value])]
 
@@ -102,8 +102,9 @@ class RectangleElimination(Rule):
 
     def get_col_eliminations(self, board, hinge, non_hinge, value):
         for c in board:
-            if c.y == hinge.y:
+            if c.y == hinge.y and c.x != hinge.x and value in c.candidates:
                 if not self.legal_arrangement(board, c, non_hinge, value):
+                    print(str(c), c.candidates)
                     return [Cell(c.x, c.y, [value])]
 
     def get_col_explanation(self, hinge, non_hinge, value):
