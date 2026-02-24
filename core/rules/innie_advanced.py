@@ -6,10 +6,12 @@ from core.coordinates import Coordinates
 from core.utils import english_list
 from functools import cache
 
-class InnieAdvanced(Rule):
+class InnieAdvancedTemplate(Rule):
     rule_name = "Killer Innie (2+ cells)"
     as_score = 30
     cg_score = 55
+    min_innie = None
+    max_innie = None
 
     # for each row, column and box
     # get all cages in that 9-group
@@ -257,7 +259,9 @@ class InnieAdvanced(Rule):
         cells = [c for c in board if Coordinates(c.x, c.y) in coords]
         cells.sort(key=lambda x: len(x.candidates))
         n = len(cells)  # Precompute list length
-        if n == 0 or any(not c.candidates for c in cells):
+        if not self.min_innie or not self.max_innie:
+            return []  # Skip eval in template class
+        if n < self.min_innie or n > self.max_innie or any(not c.candidates for c in cells):
             return []
         total_min = sum(min(c.candidates) for c in cells)
         total_max = sum(max(c.candidates) for c in cells)
@@ -324,3 +328,52 @@ class InnieAdvanced(Rule):
         return (c0.x == c1.x or
             c0.y == c1.y or
             (c0.x // 3 == c1.x // 3 and c0.y // 3 == c1.y // 3))
+
+class InnieAdvanced2(InnieAdvancedTemplate):
+    cg_score = 55
+    min_innie = 2
+    max_innie = 2
+
+class InnieAdvanced3(InnieAdvancedTemplate):
+    cg_score = 60
+    min_innie = 3
+    max_innie = 3
+
+class InnieAdvanced4(InnieAdvancedTemplate):
+    cg_score = 65
+    min_innie = 4
+    max_innie = 4
+
+class InnieAdvanced5(InnieAdvancedTemplate):
+    cg_score = 70
+    min_innie = 5
+    max_innie = 5
+
+class InnieAdvanced6(InnieAdvancedTemplate):
+    cg_score = 75
+    min_innie = 6
+    max_innie = 6
+
+class InnieAdvanced7(InnieAdvancedTemplate):
+    cg_score = 80
+    min_innie = 7
+    max_innie = 7
+
+class InnieAdvanced8(InnieAdvancedTemplate):
+    cg_score = 85
+    min_innie = 8
+    max_innie = 8
+
+class InnieAdvanced9(InnieAdvancedTemplate):
+    cg_score = 90
+    min_innie = 9
+    max_innie = 9
+
+class InnieAdvanced10(InnieAdvancedTemplate):
+    cg_score = 100
+    min_innie = 10
+    max_innie = 100
+
+    def find_update(self, board):
+        print("Warning: InnieAdvanced10 may take a long time to compute")
+        return super().find_update(board)

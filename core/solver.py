@@ -41,8 +41,15 @@ class Solver:
         for m in pkgutil.iter_modules(core.rules.__path__, core.rules.__name__ + "."):
             mod = importlib.import_module(m.name)
 
-        self.rules = sorted([cls() for cls in Rule.__subclasses__()], key=lambda x: x.cg_score)
+        rules = self.get_rules_recursive(Rule)
+        self.rules = sorted([cls() for cls in rules], key=lambda x: x.cg_score)
         return
+    
+    def get_rules_recursive(self, subclass):
+        l = [subclass]
+        for s in subclass.__subclasses__():
+            l += self.get_rules_recursive(s)
+        return l
 
     def solve(self, board, debug=False):
         n = sum([len(c.candidates) for c in board])
@@ -51,6 +58,14 @@ class Solver:
         solving = True
         while solving:
             solving = self.solve_once(board, debug)
+            if self.is_completed(board):
+                solving = False
+
+            # Extra debugging tools
+            # if self.wrong_solution(board):
+            #     break
+            # import json
+            # print(json.dumps(board.cells, default=lambda o: o.__dict__))
         if self.is_completed(board):
             if debug:
                 print(board.candidates_grid_string())
@@ -96,6 +111,31 @@ class Solver:
     
     def is_completed(self, board):
         for c in board:
-            if len(c.candidates) != 1:
+            if len(c.candidates) > 1:
                 return False
         return True
+
+    debug_soln = """
+        {
+        "cages": [],
+        "cells": [
+            {
+            "x": 0,
+            "y": 0,
+            "candidates": [
+                7
+            ]
+            fill in rest of puzzle...
+        ]
+        }"""
+
+    def wrong_solution(self, board):
+        from core.board import Board
+        solution = Board()
+        solution.load_json(self.debug_soln)
+        for c in board:
+            for sc in solution:
+                if c.x == sc.x and c.y == sc.y:
+                    if sc.candidates[0] not in c.candidates:
+                        return True
+        return False
