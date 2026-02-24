@@ -1,5 +1,5 @@
 import unittest
-from core.rules.innie_advanced import InnieAdvanced
+from core.rules.innie_advanced import InnieAdvancedTemplate
 from core.board import Board
 
 class TestInnieAdvanced(unittest.TestCase):
@@ -855,8 +855,10 @@ class TestInnieAdvanced(unittest.TestCase):
 
     def setUp(self):
         self.board = Board()
-        self.rule = InnieAdvanced()
-
+        self.rule = InnieAdvancedTemplate()
+        self.rule.min_innie = 1
+        self.rule.max_innie = 100
+ 
     def test_basic_case_row(self):
         self.board.load_json(self.one_row_with_6_innie)
         update = self.rule.find_update(self.board)

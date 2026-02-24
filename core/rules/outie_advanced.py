@@ -6,10 +6,12 @@ from core.coordinates import Coordinates
 from core.utils import english_list
 from functools import cache
 
-class OutieAdvanced(Rule):
+class OutieAdvancedTemplate(Rule):
     rule_name = "Killer Outie (2+ cells)"
     as_score = 30
     cg_score = 55
+    min_outie = None
+    max_outie = None
 
     # for each row, column and box
     # get all cages in that 9-group
@@ -266,7 +268,9 @@ class OutieAdvanced(Rule):
         cells = [c for c in board if Coordinates(c.x, c.y) in coords]
         cells.sort(key=lambda x: len(x.candidates))
         n = len(cells)  # Precompute list length
-        if n == 0 or any(not c.candidates for c in cells):
+        if not self.min_outie or not self.max_outie:
+            return []  # Skip eval in template class
+        if n < self.min_outie or n > self.max_outie or any(not c.candidates for c in cells):
             return []
         total_min = sum(min(c.candidates) for c in cells)
         total_max = sum(max(c.candidates) for c in cells)
@@ -333,3 +337,52 @@ class OutieAdvanced(Rule):
         return (c0.x == c1.x or
             c0.y == c1.y or
             (c0.x // 3 == c1.x // 3 and c0.y // 3 == c1.y // 3))
+
+class OutieAdvanced2(OutieAdvancedTemplate):
+    cg_score = 55
+    min_outie = 2
+    max_outie = 2
+
+class OutieAdvanced3(OutieAdvancedTemplate):
+    cg_score = 60
+    min_outie = 3
+    max_outie = 3
+
+class OutieAdvanced4(OutieAdvancedTemplate):
+    cg_score = 65
+    min_outie = 4
+    max_outie = 4
+
+class OutieAdvanced5(OutieAdvancedTemplate):
+    cg_score = 70
+    min_outie = 5
+    max_outie = 5
+
+class OutieAdvanced6(OutieAdvancedTemplate):
+    cg_score = 75
+    min_outie = 6
+    max_outie = 6
+
+class OutieAdvanced7(OutieAdvancedTemplate):
+    cg_score = 80
+    min_outie = 7
+    max_outie = 7
+
+class OutieAdvanced8(OutieAdvancedTemplate):
+    cg_score = 85
+    min_outie = 8
+    max_outie = 8
+
+class OutieAdvanced9(OutieAdvancedTemplate):
+    cg_score = 90
+    min_outie = 9
+    max_outie = 9
+
+class OutieAdvanced10(OutieAdvancedTemplate):
+    cg_score = 100
+    min_outie = 10
+    max_outie = 100
+
+    def find_update(self, board):
+        print("Warning: OutieAdvanced10 may take a long time to compute")
+        return super().find_update(board)

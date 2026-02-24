@@ -1,5 +1,5 @@
 import unittest
-from core.rules.outie_advanced import OutieAdvanced
+from core.rules.outie_advanced import OutieAdvancedTemplate
 from core.board import Board
 
 class TestOutieAdvanced(unittest.TestCase):
@@ -627,7 +627,9 @@ class TestOutieAdvanced(unittest.TestCase):
 
     def setUp(self):
         self.board = Board()
-        self.rule = OutieAdvanced()
+        self.rule = OutieAdvancedTemplate()
+        self.rule.min_outie = 1
+        self.rule.max_outie = 100
     
     def test_basic_case(self):
         self.board.load_json(self.one_row_with_6_outie)
