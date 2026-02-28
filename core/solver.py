@@ -1,4 +1,5 @@
 from core.rules.rule import Rule
+from core.scorer import Scorer
 import core.rules
 import pkgutil
 import importlib
@@ -43,6 +44,7 @@ class Solver:
 
         rules = self.get_rules_recursive(Rule)
         self.rules = sorted([cls() for cls in rules], key=lambda x: x.cg_score)
+        self.scorer = Scorer()
         return
     
     def get_rules_recursive(self, subclass):
@@ -70,6 +72,7 @@ class Solver:
             if debug:
                 print(board.candidates_grid_string())
                 print("solved puzzle")
+                print(f"Grade: {self.scorer.get_overall_score(board):.2f}")
         else:
             if debug:
                 n = sum([len(c.candidates) for c in board])
@@ -79,20 +82,24 @@ class Solver:
     def solve_once(self, board, debug=False):
         update = None
         for rule in self.rules:
-            update = rule.find_update(board)
-            if update.eliminations:
+            update = rule.find_update_with_score(board)
+            if update and (update.eliminations or update.cages):
                 break
         if update and update.eliminations:
+            score = self.scorer.update_score(board, update)
             if debug:
                 print(board.candidates_grid_string())
                 print(update.rule_name, update.explanation, [(e, e.candidates) for e in update.eliminations])
+                print(f"Score: {score:.2f}")
             self.apply_eliminations(board, update)
             return True
         if update and update.cages:
+            score = self.scorer.update_score(board, update)
             if debug:
                 print(board.candidates_grid_string())
-                print(update.rule_name, update.explanation, [(c, c.subcages) for c in update.cages])
-            self.apply_cages(board, update)
+                print(update.rule_name, update.explanation, [(str(c), [str(sc) for sc in c.subcages]) for c in update.cages])
+                print(f"Score: {score:.2f}")
+            self.apply_cages(board, update.cages)
             return True
         return False
 
