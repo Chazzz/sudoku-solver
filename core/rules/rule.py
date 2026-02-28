@@ -6,6 +6,14 @@ class Rule:
     as_score = 0
     cg_score = 0
     
+    def find_update_with_score(self, board):
+        update = self.find_update(board)
+        if not update:
+            raise Exception("Update expected; got None")
+        update.rule_name = self.rule_name
+        update.score = self.cg_score
+        return update
+
     def find_update(self, board):
         return Update(self.rule_name)
     

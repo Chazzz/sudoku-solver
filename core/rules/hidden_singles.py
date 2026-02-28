@@ -4,8 +4,8 @@ from core.cell import Cell
 
 class HiddenSingles(Rule):
     rule_name = "Hidden Singles"
-    as_score = 1
-    cg_score = 1
+    as_score = 2
+    cg_score = 2
 
     # consider each row, column, and box
     # If only one cell in that unit has a given candidate,

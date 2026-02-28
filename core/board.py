@@ -11,6 +11,7 @@ class Board:
                 cells.append(Cell(i,j))
         self.cells = cells
         self.cages = []
+        self.scores = []
 
     def __iter__(self):
         return iter(self.cells)
