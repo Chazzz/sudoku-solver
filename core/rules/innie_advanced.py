@@ -9,7 +9,7 @@ from functools import cache
 class InnieAdvancedTemplate(Rule):
     rule_name = "Killer Innie (2+ cells)"
     as_score = 30
-    cg_score = 55
+    cg_score = 1000 # was 55, do not run
     min_innie = None
     max_innie = None
 
@@ -254,19 +254,16 @@ class InnieAdvancedTemplate(Rule):
         return f"{box_text}, {box_sum_text}, making cells {cells} sum to {value}. {value_text}"
 
     def check_cells_optimized(self, coords, board, cell_sum):
+        n = len(coords)  # Precompute list length
+        if not self.min_innie or not self.max_innie:
+            return []  # Skip eval in template class
+        if n < self.min_innie or n > self.max_innie:
+            return []  # Skip eval for wrong sized innie
+
         # MRV heuristic: try cells with fewest candidates first
         # This prunes the search tree faster on real Killer Sudoku boards
         cells = [c for c in board if Coordinates(c.x, c.y) in coords]
         cells.sort(key=lambda x: len(x.candidates))
-        n = len(cells)  # Precompute list length
-        if not self.min_innie or not self.max_innie:
-            return []  # Skip eval in template class
-        if n < self.min_innie or n > self.max_innie or any(not c.candidates for c in cells):
-            return []
-        total_min = sum(min(c.candidates) for c in cells)
-        total_max = sum(max(c.candidates) for c in cells)
-        if cell_sum < total_min or cell_sum > total_max:
-            return []        
 
         # Precompute conflicts which trigger prune
         conflicts = [[] for _ in range(n)]
