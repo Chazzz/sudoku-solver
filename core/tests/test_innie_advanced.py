@@ -949,7 +949,6 @@ class TestInnieAdvanced(unittest.TestCase):
         self.assertEqual(update.rule_name, "Killer Innie (2+ cells)")
         self.assertEqual(update.explanation, "Boxes (1, 0) and (1, 1) form a cage which adds to 90, and all cages containing the boxes except for ['F6', 'F1'] sum to 84, making cells ['F6', 'F1'] sum to 6. The following values are never used to form a valid sum in cells ['F6', 'F1']: 3 at F1, 6 at F1, 7 at F1, 8 at F1, 9 at F1, 3 at F6, 6 at F6, 7 at F6, 8 at F6, and 9 at F6.")
 
-
     def test_innie_filled_in(self):
         self.board.load_json(self.two_boxes_with_6_innie)
         for c in self.board:
@@ -959,4 +958,3 @@ class TestInnieAdvanced(unittest.TestCase):
                 c.candidates = [1, 2, 3, 4, 5, 7, 8, 9]
         update = self.rule.find_update(self.board)
         self.assertIsNone(update.eliminations)
-

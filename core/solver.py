@@ -57,8 +57,9 @@ class Solver:
             l += self.get_rules_recursive(s)
         return l
 
-    def calibrate(self, iterations=7):
-        print("Calibrating (takes several seconds)")
+    def calibrate(self, iterations=7, debug=False):
+        if debug:
+            print("Calibrating (takes several seconds)")
         times = []
         for i in range(iterations):
             board = Board()
@@ -66,11 +67,12 @@ class Solver:
             self.solve(board, calibration=True)
             times.append(sum(board.times))
         self.scorer.calibration_time = statistics.median(times)
-        print("Finished calibrating")
+        if debug:
+            print("Finished calibrating")
 
     def solve(self, board, debug=False, calibration=False):
         if not calibration and self.scorer.not_calibrated():
-            self.calibrate()
+            self.calibrate(debug=debug)
         n = sum([len(c.candidates) for c in board])
         if debug:
             print(f"Solving puzzle, candidates remaining: {n}/729")
