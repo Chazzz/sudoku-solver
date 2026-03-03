@@ -1,9 +1,12 @@
 from core.rules.rule import Rule
 from core.scorer import Scorer
+from core.board import Board
 import core.rules
 import pkgutil
 import importlib
 import inspect
+import time
+import statistics
 
 class Solver:
     def __init__(self):
@@ -44,6 +47,7 @@ class Solver:
 
         rules = self.get_rules_recursive(Rule)
         self.rules = sorted([cls() for cls in rules], key=lambda x: x.cg_score)
+        self.calibration_time = None
         self.scorer = Scorer()
         return
     
@@ -53,13 +57,26 @@ class Solver:
             l += self.get_rules_recursive(s)
         return l
 
-    def solve(self, board, debug=False):
+    def calibrate(self, iterations=7):
+        print("Calibrating (takes several seconds)")
+        times = []
+        for i in range(iterations):
+            board = Board()
+            board.load_json(self.scorer.calibration_board)
+            self.solve(board, calibration=True)
+            times.append(sum(board.times))
+        self.scorer.calibration_time = statistics.median(times)
+        print("Finished calibrating")
+
+    def solve(self, board, debug=False, calibration=False):
+        if not calibration and self.scorer.not_calibrated():
+            self.calibrate()
         n = sum([len(c.candidates) for c in board])
         if debug:
             print(f"Solving puzzle, candidates remaining: {n}/729")
         solving = True
         while solving:
-            solving = self.solve_once(board, debug)
+            solving = self.solve_once(board, debug, calibration)
             if self.is_completed(board):
                 solving = False
 
@@ -79,14 +96,19 @@ class Solver:
                 print(board.candidates_grid_string())
                 print(f"Unsolved puzzle, candidates remaining: {n}/729")
 
-    def solve_once(self, board, debug=False):
+    def solve_once(self, board, debug=False, calibration=False):
         update = None
+        t0 = time.process_time()
         for rule in self.rules:
             update = rule.find_update_with_score(board)
             if update and (update.eliminations or update.cages):
+                t1 = time.process_time()
                 break
         if update and update.eliminations:
-            score = self.scorer.update_score(board, update)
+            board.times.append(t1 - t0)
+            score = None
+            if not calibration:
+                score = self.scorer.update_score(board, t1 - t0)
             if debug:
                 print(board.candidates_grid_string())
                 print(update.rule_name, update.explanation, [(e, e.candidates) for e in update.eliminations])
@@ -94,7 +116,10 @@ class Solver:
             self.apply_eliminations(board, update)
             return True
         if update and update.cages:
-            score = self.scorer.update_score(board, update)
+            board.times.append(t1 - t0)
+            score = None
+            if not calibration:
+                score = self.scorer.update_score(board, t1 - t0)
             if debug:
                 print(board.candidates_grid_string())
                 print(update.rule_name, update.explanation, [(str(c), [str(sc) for sc in c.subcages]) for c in update.cages])
