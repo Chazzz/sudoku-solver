@@ -1,3 +1,4 @@
+from .cell import Cell
 from .coordinates import Coordinates
 
 class Cage:
@@ -12,6 +13,8 @@ class Cage:
         return f"{[str(c) for c in self.coordinates]} with sum {self.sum}"
 
     def __contains__(self, item):
+        if isinstance(item, Cell):
+            return Coordinates(item.x, item.y) in self.coordinates
         if isinstance(item, Coordinates):
             return item in self.coordinates
         if isinstance(item, Cage):
