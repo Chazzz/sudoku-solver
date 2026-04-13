@@ -9,6 +9,8 @@ class CapturedCandidates(Rule):
     as_score = 20
     cg_score = 15
 
+    # This is basically "pointing cages" and "box cage reduction"
+    # (compare to pointing pairs and box line reduction)
     # If a candidate has to be in a specific cage, remove it from qualified rows/columns/box
     # Cage-by-cage helps make sure that the coordinates that are captured are not already singles. 
     def find_update(self, board):
@@ -20,16 +22,16 @@ class CapturedCandidates(Rule):
     
     def check_cage(self, board, cage):
         singles = []
-        single_coordinates = []
-        captured_coords = []
+        single_cells = []
+        captured_cells = []
         for c in board:
             if Coordinates(c.x, c.y) in cage.coordinates:
                 if len(c.candidates) == 1:
                     singles.append(c.candidates[0])
-                    single_coordinates.append(Coordinates(c.x, c.y))
+                    single_cells.append(c)
                 else:
-                    captured_coords.append(Coordinates(c.x, c.y))
-        if not captured_coords:
+                    captured_cells.append(c)
+        if not captured_cells:
             return
         key = (len(cage.coordinates) - len(singles), cage.sum - sum(singles))
         combos = cell_combos[key]
@@ -40,11 +42,25 @@ class CapturedCandidates(Rule):
             captured_set &= set(combo)
         if len(captured_set) == 0:
             return
-        for check in (self.check_rows, self.check_cols, self.check_boxes):
-            update = check(board, cage, captured_set, captured_coords)
+
+        # A captured candidate might not be a candidate in all captured coords
+        # which would make pointing cages/box reduction more likely
+        # So instead of checking the set as a block
+        # Instead check each captured candidate with its captured coords
+        for v in captured_set:
+            captured_coords = []
+            for c in captured_cells:
+                if v in c.candidates:
+                    captured_coords.append(Coordinates(c.x, c.y))
+            update = self.check_value_in_cage(board, cage, v, captured_coords)
             if update:
                 return update
-        return Update(self.rule_name)
+    
+    def check_value_in_cage(self, board, cage, v, captured_coords):
+        for check in (self.check_rows, self.check_cols, self.check_boxes):
+            update = check(board, cage, set([v]), captured_coords)
+            if update:
+                return update
 
     def check_rows(self, board, cage, captured_set, captured_coords):
         rows = list(set([c.y for c in captured_coords]))

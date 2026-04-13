@@ -167,4 +167,4 @@ These grades roughly correspond to the following:
 - 4: Expert
 - 5+: Beyond Expert
 
-The hardest grade puzzle this solver can solve is approximately 5.6.
+The hardest grade puzzle this solver can solve is approximately 6.
