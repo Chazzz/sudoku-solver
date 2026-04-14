@@ -1,8 +1,8 @@
 import unittest
-from core.rules.captured_candidates_inverted_hard import CapturedCandidatesInvertedHard
+from core.rules.captured_candidates_inverted_easy import CapturedCandidatesInvertedEasy
 from core.board import Board
 
-class TestCapturedCandidatesInvertedHard(unittest.TestCase):
+class TestCapturedCandidatesInvertedEasy(unittest.TestCase):
     row_nine_cage = """
         {
         "cages": [
@@ -105,7 +105,8 @@ class TestCapturedCandidatesInvertedHard(unittest.TestCase):
 
     def setUp(self):
         self.board = Board()
-        self.rule = CapturedCandidatesInvertedHard()
+        self.rule = CapturedCandidatesInvertedEasy()
+        self.maxDiff = None
 
     def test_row(self):
         self.board.load_json(self.row_nine_cage)
@@ -120,7 +121,7 @@ class TestCapturedCandidatesInvertedHard(unittest.TestCase):
         for e in update.eliminations:
             self.assertTrue(str(e) in ['C1', 'D1', 'E1'])
             self.assertEqual(e.candidates, [4])
-        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Hard)")
+        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Easy)")
         self.assertEqual(update.explanation, "Given 1 is only possible in C1, D1, and E1 for all cells in that row, 1 must be in cage ['C1', 'D1', 'E1'] with sum 9. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'E1'] with sum 9: 4 at C1, 4 at D1, and 4 at E1.")
 
     def test_col(self):
@@ -136,7 +137,7 @@ class TestCapturedCandidatesInvertedHard(unittest.TestCase):
         for e in update.eliminations:
             self.assertTrue(str(e) in ['A3', 'A4', 'A5'])
             self.assertEqual(e.candidates, [4])
-        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Hard)")
+        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Easy)")
         self.assertEqual(update.explanation, "Given 1 is only possible in A3, A4, and A5 for all cells in that column, 1 must be in cage ['A3', 'A4', 'A5'] with sum 9. With that requirement, the following values are never used to form a valid sum in cage ['A3', 'A4', 'A5'] with sum 9: 4 at A3, 4 at A4, and 4 at A5.")
 
     def test_box(self):
@@ -150,12 +151,9 @@ class TestCapturedCandidatesInvertedHard(unittest.TestCase):
         self.assertEqual(len(update.eliminations), 3)
         for e in update.eliminations:
             self.assertTrue(str(e) in ['C1', 'C2', 'D1'])
-            if str(e) in ['C1', 'C2']:
-                self.assertEqual(e.candidates, [4])
-            if str(e) in ['D1']:
-                self.assertEqual(e.candidates, [1,4])
-        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Hard)")
-        self.assertEqual(update.explanation, "Given 1 is only possible in C1 and C2 for all cells in that box, 1 must be in cage ['C1', 'D1', 'C2'] with sum 9. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'C2'] with sum 9: 4 at C1, 4 at C2, 1 at D1, and 4 at D1.")
+            self.assertEqual(e.candidates, [4])  # too stupid to eliminate 1 in D1
+        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Easy)")
+        self.assertEqual(update.explanation, "Given 1 is only possible in C1 and C2 for all cells in that box, 1 must be in cage ['C1', 'D1', 'C2'] with sum 9. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'C2'] with sum 9: 4 at C1, 4 at C2, and 4 at D1.")
 
     def test_bent_col(self):
         self.board.load_json(self.bent_nine_cage)
@@ -168,12 +166,9 @@ class TestCapturedCandidatesInvertedHard(unittest.TestCase):
         self.assertEqual(len(update.eliminations), 3)
         for e in update.eliminations:
             self.assertTrue(str(e) in ['C1', 'C2', 'D1'])
-            if str(e) in ['C1', 'C2']:
-                self.assertEqual(e.candidates, [4])
-            if str(e) in ['D1']:
-                self.assertEqual(e.candidates, [1,4])
-        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Hard)")
-        self.assertEqual(update.explanation, "Given 1 is only possible in C1 and C2 for all cells in that column, 1 must be in cage ['C1', 'D1', 'C2'] with sum 9. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'C2'] with sum 9: 4 at C1, 4 at C2, 1 at D1, and 4 at D1.")
+            self.assertEqual(e.candidates, [4])  # too stupid to eliminate 1 in D1
+        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Easy)")
+        self.assertEqual(update.explanation, "Given 1 is only possible in C1 and C2 for all cells in that column, 1 must be in cage ['C1', 'D1', 'C2'] with sum 9. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'C2'] with sum 9: 4 at C1, 4 at C2, and 4 at D1.")
 
     def test_multiple_captured(self):
         self.board.load_json(self.bent_twelve_cage)
@@ -188,11 +183,8 @@ class TestCapturedCandidatesInvertedHard(unittest.TestCase):
         self.assertEqual(len(update.eliminations), 4)
         for e in update.eliminations:
             self.assertTrue(str(e) in ['C1', 'C2', 'D1', 'E1'])
-            if str(e) in ['C1', 'D1', 'E1']:
-                self.assertEqual(e.candidates, [4, 5])
-            if str(e) in ['C2']:
-                self.assertEqual(e.candidates, [3, 4, 5, 6])
-        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Hard)")
-        self.assertEqual(update.explanation, "Given 3 and 6 are only possible in C1, D1, and E1 for all cells in that row, 3 and 6 must be in cage ['C1', 'D1', 'E1', 'C2'] with sum 12. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'E1', 'C2'] with sum 12: 4 at C1, 5 at C1, 3 at C2, 4 at C2, 5 at C2, 6 at C2, 4 at D1, 5 at D1, 4 at E1, and 5 at E1.")
+            self.assertEqual(e.candidates, [4, 5])  # too stupid to eliminate 3, 6 in C2
+        self.assertEqual(update.rule_name, "Killer Captured Candidates 2 (Easy)")
+        self.assertEqual(update.explanation, "Given 3 and 6 are only possible in C1, D1, and E1 for all cells in that row, 3 and 6 must be in cage ['C1', 'D1', 'E1', 'C2'] with sum 12. With that requirement, the following values are never used to form a valid sum in cage ['C1', 'D1', 'E1', 'C2'] with sum 12: 4 at C1, 5 at C1, 4 at C2, 5 at C2, 4 at D1, 5 at D1, 4 at E1, and 5 at E1.")
 
     
