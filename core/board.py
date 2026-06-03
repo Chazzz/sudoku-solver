@@ -13,6 +13,7 @@ class Board:
         self.cages = []
         self.scores = []
         self.times = []
+        self.virtual_cages = []
 
     def __iter__(self):
         return iter(self.cells)

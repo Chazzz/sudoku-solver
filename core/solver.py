@@ -103,7 +103,7 @@ class Solver:
         t0 = time.process_time()
         for rule in self.rules:
             update = rule.find_update_with_score(board)
-            if update and (update.eliminations or update.cages):
+            if update and (update.eliminations or update.cages or update.virtual_cages):
                 t1 = time.process_time()
                 break
         if update and update.eliminations:
@@ -128,6 +128,17 @@ class Solver:
                 print(f"Score: {score:.2f}")
             self.apply_cages(board, update.cages)
             return True
+        if update and update.virtual_cages:
+            board.times.append(t1 - t0)
+            score = None
+            if not calibration:
+                score = self.scorer.update_score(board, t1 - t0)
+            if debug:
+                print(board.candidates_grid_string())
+                print(update.rule_name, update.explanation, [(str(c), [str(sc) for sc in c.subcages]) for c in update.virtual_cages])
+                print(f"Score: {score:.2f}")
+            self.apply_virtual_cages(board, update.virtual_cages)
+            return True
         return False
 
     def apply_eliminations(self, board, update):
@@ -142,6 +153,16 @@ class Solver:
             for c in board.cages:
                 if cage in c:
                     c.subcages = cage.subcages
+    
+    def apply_virtual_cages(self, board, virtual_cages):
+        for cage in virtual_cages:
+            cage_found = False
+            for c in board.virtual_cages:
+                if cage in c:
+                    cage_found = True
+                    c.subcages = cage.subcages
+            if not cage_found:
+                board.virtual_cages.append(cage)
     
     def is_completed(self, board):
         for c in board:
