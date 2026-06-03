@@ -13,7 +13,7 @@ class InnieSimpleInferred(InnieSimple):
     def check_row_range(self, board, row_start, row_end):
         row_cages = []
         sc_used = False
-        for cage in board.cages:
+        for cage in board.all_cages():
             if cage.subcages:
                 sc_used = True
                 for sc in cage.subcages:
@@ -28,7 +28,7 @@ class InnieSimpleInferred(InnieSimple):
     def check_col_range(self, board, col_start, col_end):
         col_cages = []
         sc_used = False
-        for cage in board.cages:
+        for cage in board.all_cages():
             if cage.subcages:
                 sc_used = True
                 for sc in cage.subcages:
@@ -43,7 +43,7 @@ class InnieSimpleInferred(InnieSimple):
     def check_box_combination(self, board, boxes):
         box_cages = []
         sc_used = False
-        for cage in board.cages:
+        for cage in board.all_cages():
             if cage.subcages:
                 sc_used = True
                 for sc in cage.subcages:

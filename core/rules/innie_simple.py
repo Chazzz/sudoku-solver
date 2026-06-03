@@ -35,7 +35,7 @@ class InnieSimple(Rule):
 
     def check_row_range(self, board, row_start, row_end):
         row_cages = []
-        for cage in board.cages:
+        for cage in board.all_cages():
             if any(row_start <= c.y <= row_end for c in cage.coordinates):
                 row_cages.append(cage)
         return self.check_row_cages(board, row_start, row_end, row_cages)
@@ -94,7 +94,7 @@ class InnieSimple(Rule):
 
     def check_col_range(self, board, col_start, col_end):
         col_cages = []
-        for cage in board.cages:
+        for cage in board.all_cages():
             if any(col_start <= c.x <= col_end for c in cage.coordinates):
                 col_cages.append(cage)
         return self.check_col_cages(board, col_start, col_end, col_cages)
@@ -188,7 +188,7 @@ class InnieSimple(Rule):
     
     def check_box_combination(self, board, boxes):
         box_cages = []
-        for cage in board.cages:
+        for cage in board.all_cages():
             if any(self.in_boxes(c, boxes) for c in cage.coordinates):
                 box_cages.append(cage)
         return self.check_box_cages(board, boxes, box_cages)

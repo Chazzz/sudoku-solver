@@ -8,7 +8,7 @@ from core.utils import cell_combos, english_list
 class VirtualCagesBasic(Rule):
     rule_name = "Virtual Cage Creation (Basic)"
     as_score = 1000  # Not implemented
-    cg_score = 40
+    cg_score = 30 # Done before innie/outie
 
     # If not all cells contained in cages,
     # Add virtual cage with remaining cells
