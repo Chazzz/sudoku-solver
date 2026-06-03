@@ -407,6 +407,91 @@ class TestInnieSimpleInferred(unittest.TestCase):
         "cells": []
         }"""
 
+    one_row_with_6_innie_inferred_virtual = """
+        {
+        "cages": [
+            {
+            "coordinates": [
+                {
+                "x": 8,
+                "y": 0
+                },
+                {
+                "x": 8,
+                "y": 1
+                },
+                {
+                "x": 8,
+                "y": 2
+                }
+            ],
+            "sum": 20
+            }
+        ],
+        "virtual_cages": [
+            {
+            "coordinates": [
+                {
+                "x": 0,
+                "y": 0
+                },
+                {
+                "x": 1,
+                "y": 0
+                },
+                {
+                "x": 2,
+                "y": 0
+                },
+                {
+                "x": 3,
+                "y": 0
+                },
+                {
+                "x": 4,
+                "y": 0
+                },
+                {
+                "x": 5,
+                "y": 0
+                },
+                {
+                "x": 6,
+                "y": 0
+                }
+            ],
+            "sum": 38
+            },
+            {
+            "coordinates": [
+                {
+                "x": 7,
+                "y": 0
+                },
+                {
+                "x": 7,
+                "y": 1
+                },
+                {
+                "x": 7,
+                "y": 2
+                }
+            ],
+            "sum": 16
+            }
+        ],
+        "cells": [
+            {
+            "x": 7,
+            "y": 0,
+            "candidates": [
+                1
+            ]
+            }
+        ]
+        }"""
+
+
     def setUp(self):
         self.board = Board()
         self.rule = InnieSimpleInferred()

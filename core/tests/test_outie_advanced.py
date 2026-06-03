@@ -625,6 +625,65 @@ class TestOutieAdvanced(unittest.TestCase):
         ]
         }"""
 
+    one_row_with_6_outie_virtual = """
+        {
+        "cages": [
+            {
+            "coordinates": [
+                {
+                "x": 0,
+                "y": 0
+                },
+                {
+                "x": 1,
+                "y": 0
+                },
+                {
+                "x": 2,
+                "y": 0
+                },
+                {
+                "x": 3,
+                "y": 0
+                },
+                {
+                "x": 4,
+                "y": 0
+                },
+                {
+                "x": 5,
+                "y": 0
+                },
+                {
+                "x": 6,
+                "y": 0
+                },
+                {
+                "x": 7,
+                "y": 0
+                }
+            ],
+            "sum": 42
+            }
+        ],
+        "virtual_cages": [
+            {
+            "coordinates": [
+                {
+                "x": 8,
+                "y": 0
+                },
+                {
+                "x": 8,
+                "y": 1
+                }
+            ],
+            "sum": 9
+            }
+        ]
+        }"""
+
+
     def setUp(self):
         self.board = Board()
         self.rule = OutieAdvancedTemplate()
@@ -723,3 +782,13 @@ class TestOutieAdvanced(unittest.TestCase):
                 c.candidates = [1, 2, 4, 5, 6, 7, 8, 9]
         update = self.rule.find_update(self.board)
         self.assertIsNone(update.eliminations)
+
+    def test_basic_case_virtual(self):
+        self.board.load_json(self.one_row_with_6_outie_virtual)
+        update = self.rule.find_update(self.board)
+        self.assertEqual(len(update.eliminations), 1) 
+        for e in update.eliminations:
+            self.assertEqual(str(e), "I2")
+            self.assertEqual(e.candidates, [1, 2, 3, 4, 5, 7, 8, 9])
+        self.assertEqual(update.rule_name, "Killer Outie (2+ cells)")
+        self.assertEqual(update.explanation, "Row 1 forms a cage which adds to 45, and all cages containing the row plus ['I2'] sum to 51, making cells ['I2'] sum to 6. The following values are never used to form a valid sum in cells ['I2']: 1 at I2, 2 at I2, 3 at I2, 4 at I2, 5 at I2, 7 at I2, 8 at I2, and 9 at I2.")

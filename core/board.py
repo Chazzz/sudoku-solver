@@ -39,6 +39,11 @@ class Board:
                 coordinates = [Coordinates(c["x"], c["y"]) for c in cage_dict["coordinates"]]
                 cage = Cage(coordinates, cage_dict["sum"])
                 self.cages.append(cage)
+        if "virtual_cages" in data:
+            for cage_dict in data["virtual_cages"]:
+                coordinates = [Coordinates(c["x"], c["y"]) for c in cage_dict["coordinates"]]
+                cage = Cage(coordinates, cage_dict["sum"])
+                self.virtual_cages.append(cage)
     
     def candidates_grid_string(self):
         out = ""
@@ -73,6 +78,8 @@ class Board:
             out += "|\n"
         out += "·-----" * 9 + "·"
         return out
-
+    
+    def all_cages(self):
+        return self.cages + self.virtual_cages
 
 

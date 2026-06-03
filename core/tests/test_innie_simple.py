@@ -500,6 +500,69 @@ class TestInnieSimple(unittest.TestCase):
         ]
         }"""
 
+    one_row_with_6_innie_virtual = """
+        {
+        "cages": [
+            {
+            "coordinates": [
+                {
+                "x": 0,
+                "y": 0
+                },
+                {
+                "x": 1,
+                "y": 0
+                },
+                {
+                "x": 2,
+                "y": 0
+                },
+                {
+                "x": 3,
+                "y": 0
+                },
+                {
+                "x": 4,
+                "y": 0
+                },
+                {
+                "x": 5,
+                "y": 0
+                },
+                {
+                "x": 6,
+                "y": 0
+                },
+                {
+                "x": 7,
+                "y": 0
+                }
+            ],
+            "sum": 39
+            }
+        ],
+        "virtual_cages": [
+            {
+            "coordinates": [
+                {
+                "x": 8,
+                "y": 0
+                },
+                {
+                "x": 8,
+                "y": 1
+                },
+                {
+                "x": 8,
+                "y": 2
+                }
+            ],
+            "sum": 20
+            }
+        ]
+        }"""
+
+
     def setUp(self):
         self.board = Board()
         self.rule = InnieSimple()
@@ -571,4 +634,13 @@ class TestInnieSimple(unittest.TestCase):
                 c.candidates = [6]
         update = self.rule.find_update(self.board)
         self.assertIsNone(update.eliminations)
-
+    
+    def test_basic_case_row_virtual(self):
+        self.board.load_json(self.one_row_with_6_innie_virtual)
+        update = self.rule.find_update(self.board)
+        self.assertEqual(len(update.eliminations), 1) 
+        for e in update.eliminations:
+            self.assertEqual(str(e), "I1")
+            self.assertEqual(e.candidates, [1, 2, 3, 4, 5, 7, 8, 9])
+        self.assertEqual(update.rule_name, "Killer Innie (1 cell)")
+        self.assertEqual(update.explanation, "Row 1 forms a cage which adds to 45, and all cages containing the row except for I1 sum to 39, making I1 equal to 6.")

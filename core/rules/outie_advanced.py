@@ -36,7 +36,7 @@ class OutieAdvancedTemplate(Rule):
 
     def check_row_range(self, board, row_start, row_end):
         row_cages = []
-        for cage in board.cages:
+        for cage in board.all_cages():
             if cage.subcages:
                 for sc in cage.subcages:
                     if any(row_start <= c.y <= row_end for c in sc.coordinates):
@@ -103,7 +103,7 @@ class OutieAdvancedTemplate(Rule):
 
     def check_col_range(self, board, col_start, col_end):
         col_cages = []
-        for cage in board.cages:
+        for cage in board.all_cages():
             if cage.subcages:
                 for sc in cage.subcages:
                     if any(col_start <= c.x <= col_end for c in sc.coordinates):
@@ -207,7 +207,7 @@ class OutieAdvancedTemplate(Rule):
     
     def check_box_combination(self, board, boxes):
         box_cages = []
-        for cage in board.cages:
+        for cage in board.all_cages():
             if cage.subcages:
                 for sc in cage.subcages:
                     if any(self.in_boxes(c, boxes) for c in sc.coordinates):
