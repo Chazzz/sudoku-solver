@@ -14,6 +14,7 @@ class Board:
         self.scores = []
         self.times = []
         self.virtual_cages = []
+        self.is_x = False
 
     def __iter__(self):
         return iter(self.cells)
@@ -44,6 +45,8 @@ class Board:
                 coordinates = [Coordinates(c["x"], c["y"]) for c in cage_dict["coordinates"]]
                 cage = Cage(coordinates, cage_dict["sum"])
                 self.virtual_cages.append(cage)
+        if "is_x" in data:
+            self.is_x = data["is_x"]
     
     def candidates_grid_string(self):
         out = ""
