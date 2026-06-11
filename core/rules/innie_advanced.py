@@ -326,6 +326,20 @@ class InnieAdvancedTemplate(Rule):
             c0.y == c1.y or
             (c0.x // 3 == c1.x // 3 and c0.y // 3 == c1.y // 3))
 
+    # TODO: This might solve certain unsolvable puzzles
+    def cells_can_see2(self, board, c0, c1):
+        if c0.x == c1.x and c0.y == c1.y:
+            return False  # being the same cell doesn't count
+        if (c0.x == c1.x or
+            c0.y == c1.y or
+            (c0.x // 3 == c1.x // 3 and c0.y // 3 == c1.y // 3)):
+            return True
+        for cage in board.cages:
+            if c0 in cage and c1 in cage:
+                return True
+        return False
+
+
 class InnieAdvanced2(InnieAdvancedTemplate):
     cg_score = 55
     min_innie = 2
