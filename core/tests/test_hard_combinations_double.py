@@ -99,7 +99,7 @@ class TestHardCombinationsDouble(unittest.TestCase):
         ]
         }"""
 
-    null_double_case = """
+    null_double_case_with_eight = """
         {
         "cages": [
             {
@@ -152,6 +152,23 @@ class TestHardCombinationsDouble(unittest.TestCase):
                 }
             ],
             "sum": 12
+            },
+            {
+            "coordinates": [
+                {
+                "x": 3,
+                "y": 6
+                },
+                {
+                "x": 3,
+                "y": 7
+                },
+                {
+                "x": 3,
+                "y": 8
+                }
+            ],
+            "sum": 8
             }
         ],
         "cells": [
@@ -225,7 +242,8 @@ class TestHardCombinationsDouble(unittest.TestCase):
         self.assertEqual(update.rule_name, "Double Killer Hard Combinations")
         self.assertEqual(update.explanation, "When comparing ['B1', 'C1', 'C2'] with sum 11 and ['D1', 'E1', 'D2'] with sum 15, the following value is never used to form a valid arrangement of the two cages: 8 at C2.")
 
-    def test_basic_case(self):
-        self.board.load_json(self.null_double_case)
+    # only 2 cages that can see each other should be checked
+    def test_optimization(self):
+        self.board.load_json(self.null_double_case_with_eight)
         update = self.rule.find_update(self.board)
         self.assertIsNone(update.eliminations)

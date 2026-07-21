@@ -6,6 +6,12 @@ Test:
 python3 -m unittest discover
 ```
 
+or for a specific file (in this case, test_hard_combinations_double.py):
+
+```
+python3 -m unittest core.tests.test_hard_combinations_double
+```
+
 Example usage:
 ```
 $ python3 main.py
