@@ -40,6 +40,11 @@ class HardCombinationsDouble(Rule):
                 if self.cells_can_see(cells[i], cells[j]):
                     conflicts[i].append(j)
 
+        t_sum = lambda x: x * (x-1) / 2
+        t_sum_2cage = t_sum(len(cage1.coordinates)) + t_sum(len(cage2.coordinates))
+        if sum([len(x) for x in conflicts]) <= t_sum_2cage:
+            return
+
         # Precompute cage_index which update sums
         cage_index = [0 if cell[1] == cage1 else 1 for cell in cells]
 
